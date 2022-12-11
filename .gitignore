@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### direct insert ###
+/.idea/
+/.mvn/
+/mvnw
+/mvnw.cmd
