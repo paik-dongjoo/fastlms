@@ -9,12 +9,16 @@
 
     <div th:if="${result}">
         <h1>회원가입완료</h1>
+        <div th:replace="/fragments/layout.html :: fragment-body-menu">
+        </div>
 
         <p>회원가입이 완료되었습니다.</p>
     </div>
 
     <div th:if="${result eq false}">
         <h1>회원가입결과</h1>
+        <div th:replace="/fragments/layout.html :: fragment-body-menu">
+        </div>
 
         <p>회원가입에 실패했습니다.</p>
     </div>

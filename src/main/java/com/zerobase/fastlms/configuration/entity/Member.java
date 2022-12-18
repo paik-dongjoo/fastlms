@@ -30,4 +30,7 @@ public class Member {
     private String emailAuthKey;
     private LocalDateTime emailAuthDt;
 
+    private String resetPasswordKey;
+    private LocalDateTime resetPasswordLimitDt;
+
 }
