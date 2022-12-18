@@ -1,7 +1,7 @@
 package com.zerobase.fastlms.member.service.impl;
 
 import com.zerobase.fastlms.components.MailComponents;
-import com.zerobase.fastlms.configuration.entity.Member;
+import com.zerobase.fastlms.entity.Member;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
@@ -81,6 +81,11 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = optionalMember.get();
+
+        if (member.isEmailAuthYn()) {
+            return false;
+        }
+
         member.setEmailAuthYn(true);
         member.setEmailAuthDt(LocalDateTime.now());
 
@@ -188,13 +193,19 @@ public class MemberServiceImpl implements MemberService {
         Member member = optionalMember.get();
 
         if(!member.isEmailAuthYn()){
-            throw new MemberNotEmailAuthException("이메일 활성화 이후에 로그인을 해주세요.");
+            throw new MemberNotEmailAuthException(
+                    "이메일 활성화 이후에 로그인을 해주세요.");
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        grantedAuthorities.add(
+                new SimpleGrantedAuthority("ROLE_USER"));
 
+        if(member.isAdminYn()) {
+            grantedAuthorities.add(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
 
         return new User(member.getUserId(), member.getPassword(),
                 grantedAuthorities);
