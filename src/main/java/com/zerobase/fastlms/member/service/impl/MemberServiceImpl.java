@@ -1,5 +1,8 @@
 package com.zerobase.fastlms.member.service.impl;
 
+import com.zerobase.fastlms.admin.dto.MemberDto;
+import com.zerobase.fastlms.admin.mapper.MemberMapper;
+import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.components.MailComponents;
 import com.zerobase.fastlms.entity.Member;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
@@ -15,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MailComponents mailComponents;
+    private final MemberMapper memberMapper;
 
     /**
      * 회원가입
@@ -102,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
                         parameter.getUserId(), parameter.getUserName()
                 );
 
-        if(!optionalMember.isPresent()) {
+        if (!optionalMember.isPresent()) {
             throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
         }
 
@@ -132,18 +137,18 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> optionalMember =
                 memberRepository.findByResetPasswordKey(uuid);
 
-        if(!optionalMember.isPresent()) {
+        if (!optionalMember.isPresent()) {
             throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
         }
 
         Member member = optionalMember.get();
 
         // 초기화 날짜가 유효한지 검증 필요
-        if(member.getResetPasswordLimitDt() == null) {
+        if (member.getResetPasswordLimitDt() == null) {
             throw new RuntimeException("유효한 초기화 기간이 아닙니다.");
         }
 
-        if(member.getResetPasswordLimitDt().isBefore(LocalDateTime.now())) {
+        if (member.getResetPasswordLimitDt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("유효한 초기화 기간이 아닙니다.");
         }
 
@@ -162,18 +167,18 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> optionalMember =
                 memberRepository.findByResetPasswordKey(uuid);
 
-        if(!optionalMember.isPresent()) {
+        if (!optionalMember.isPresent()) {
             return false;
         }
 
         Member member = optionalMember.get();
 
         // 초기화 날짜가 유효한지 검증 필요
-        if(member.getResetPasswordLimitDt() == null) {
+        if (member.getResetPasswordLimitDt() == null) {
             throw new RuntimeException("유효한 초기화 기간이 아닙니다.");
         }
 
-        if(member.getResetPasswordLimitDt().isBefore(LocalDateTime.now())) {
+        if (member.getResetPasswordLimitDt().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("유효한 초기화 기간이 아닙니다.");
         }
 
@@ -181,18 +186,36 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<MemberDto> list(MemberParam parameter) {
+
+        long totalCount = memberMapper.selectListCount(parameter);
+
+        List<MemberDto> list = memberMapper.selectList(parameter);
+        if (!CollectionUtils.isEmpty(list)) {
+            int i = 0;
+            for (MemberDto x : list) {
+                x.setTotalCount(totalCount);
+                x.setSeq(totalCount - parameter.getPageStart() - i);
+                i++;
+            }
+        }
+
+        return list;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Optional<Member> optionalMember =
-        memberRepository.findById(username);
+                memberRepository.findById(username);
 
-        if(!optionalMember.isPresent()) {
+        if (!optionalMember.isPresent()) {
             throw new UsernameNotFoundException("회원 정보가 존재하지 않습니다.");
         }
 
         Member member = optionalMember.get();
 
-        if(!member.isEmailAuthYn()){
+        if (!member.isEmailAuthYn()) {
             throw new MemberNotEmailAuthException(
                     "이메일 활성화 이후에 로그인을 해주세요.");
         }
@@ -202,7 +225,7 @@ public class MemberServiceImpl implements MemberService {
         grantedAuthorities.add(
                 new SimpleGrantedAuthority("ROLE_USER"));
 
-        if(member.isAdminYn()) {
+        if (member.isAdminYn()) {
             grantedAuthorities.add(
                     new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
