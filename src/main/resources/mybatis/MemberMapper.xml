@@ -25,11 +25,14 @@
                     and phone like concat('%', #{searchValue}, '%')
                 </when>
                 <otherwise>
-                    and (user_id like concat('%', #{searchValue}, '%')
+                    and
+                    (
+                    user_id like concat('%', #{searchValue}, '%')
                     or
                     user_name like concat('%', #{searchValue}, '%')
                     or
-                    phone like concat('%', #{searchValue}, '%'))
+                    phone like concat('%', #{searchValue}, '%')
+                    )
                 </otherwise>
             </choose>
         </if>
@@ -57,11 +60,14 @@
                     and phone like concat('%', #{searchValue}, '%')
                 </when>
                 <otherwise>
-                    and (user_id like concat('%', #{searchValue}, '%')
+                    and
+                    (
+                    user_id like concat('%', #{searchValue}, '%')
                     or
                     user_name like concat('%', #{searchValue}, '%')
                     or
-                    phone like concat('%', #{searchValue}, '%'))
+                    phone like concat('%', #{searchValue}, '%')
+                    )
                 </otherwise>
             </choose>
         </if>
