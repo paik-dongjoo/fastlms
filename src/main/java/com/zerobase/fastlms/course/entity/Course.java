@@ -1,10 +1,16 @@
 package com.zerobase.fastlms.course.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @Entity
 public class Course {
@@ -12,6 +18,8 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    long categoryId;
 
     String imagePath;
     String keyword;
@@ -25,5 +33,8 @@ public class Course {
     long price;
     long salePrice;
     LocalDateTime saleEndEt;
+
+    LocalDateTime regDt; // 등록일(추가날짜)
+    LocalDateTime udtDt; // 수정일(수정날짜)
 
 }

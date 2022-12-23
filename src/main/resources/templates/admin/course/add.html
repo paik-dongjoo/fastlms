@@ -1,0 +1,88 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 강좌 관리 화면</title>
+    <style>
+        .detail table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .detail table th, .detail table td {
+            border: solid 1px #000;
+        }
+
+        p.nothing {
+            text-align: center;
+            padding: 100px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+            integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
+
+
+</head>
+
+<body>
+
+<h1>강좌 관리 - 강좌 등록</h1>
+
+<div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+
+<div class="detail">
+
+    <form method="post">
+
+        <table>
+            <tbody>
+            <tr>
+                <th>
+                    강좌 카테고리
+                </th>
+                <td>
+                    <select name="categoryId" required>
+                        <option value="">카테고리 선택</option>
+                        <option
+                                th:selected="${detail.categoryId == x.id}"
+                                th:each="x : ${category}" th:value="${x.id}"
+                                th:text="${x.categoryName}">기획
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    강좌명:
+                </th>
+                <td>
+                    <input th:value="${detail.subject}" type="text" name="subject" required placeholder="강좌명 입력"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="buttons">
+            <button th:if="${editMode}" type="submit">강좌 수정하기</button>
+            <button th:if="${!editMode}" type="submit">강좌 등록하기</button>
+            <a href="/admin/course/list.do">목록 이동</a>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
