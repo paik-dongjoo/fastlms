@@ -3,24 +3,20 @@ package com.zerobase.fastlms.admin.model;
 import lombok.Data;
 
 @Data
-public class CommonParam{
-
+public class CommonParam {
     long pageIndex;
     long pageSize;
 
     String searchType;
     String searchValue;
 
-
     public long getPageStart() {
         init();
-
         return (pageIndex - 1) * pageSize;
     }
 
     public long getPageEnd() {
         init();
-
         return pageSize;
     }
 
@@ -36,14 +32,15 @@ public class CommonParam{
 
     public String getQueryString() {
         init();
+
         StringBuilder sb = new StringBuilder();
 
-        if(searchType != null && searchType.length() > 0) {
+        if (searchType != null && searchType.length() > 0) {
             sb.append(String.format("searchType=%s", searchType));
         }
 
-        if(searchValue != null && searchValue.length() > 0) {
-            if(sb.length() > 0) {
+        if (searchValue != null && searchType.length() > 0) {
+            if (sb.length() > 0) {
                 sb.append("&");
             }
             sb.append(String.format("searchValue=%s", searchValue));
@@ -51,4 +48,5 @@ public class CommonParam{
 
         return sb.toString();
     }
+
 }

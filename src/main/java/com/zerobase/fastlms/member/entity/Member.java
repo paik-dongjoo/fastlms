@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,15 +16,14 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 public class Member implements MemberCode {
-
     @Id
     private String userId;
+
     private String userName;
     private String phone;
     private String password;
-
-    // 화면에는 보이지 않지만 내부적으로 가입 일시를 기록하기 위함
     private LocalDateTime regDt;
+    private LocalDateTime udDt; // 회원정보 수정일
 
     private boolean emailAuthYn;
     private LocalDateTime emailAuthDt;
@@ -32,11 +32,11 @@ public class Member implements MemberCode {
     private String resetPasswordKey;
     private LocalDateTime resetPasswordLimitDt;
 
-    // 관리자 여부를 지정할 것인지?
-    // 회원에 따른 ROLE 을 지정할 것인지? - 준회원, 정회원, 특별회원, 관리자
     private boolean adminYn;
 
-    // 이용 가능한 상태, 정지 상태
-    private String userStatus;
+    private String userStatus; // 이용 가능한 상태, 정지 상태
 
+    private String zipcode; // 우편번호 실행 코드
+    private String addr;
+    private String addrDetail;
 }

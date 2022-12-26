@@ -10,13 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class UserAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-
+    // 에러가 발생했을 때 호출되는 메서드
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(
+            HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException exception) throws IOException, ServletException {
 
         String msg = "로그인에 실패하였습니다.";
 
-        if(exception instanceof InternalAuthenticationServiceException){
+        if (exception instanceof InternalAuthenticationServiceException) {
             msg = exception.getMessage();
         }
 

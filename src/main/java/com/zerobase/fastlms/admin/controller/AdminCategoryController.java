@@ -1,5 +1,6 @@
 package com.zerobase.fastlms.admin.controller;
 
+
 import com.zerobase.fastlms.admin.dto.CategoryDto;
 import com.zerobase.fastlms.admin.model.CategoryInput;
 import com.zerobase.fastlms.admin.model.MemberParam;
@@ -18,9 +19,8 @@ public class AdminCategoryController {
 
     private final CategoryService categoryService;
 
-
     @GetMapping("/admin/category/list.do")
-    public String list(Model model, MemberParam parameter) {
+    public String list(Model model) {
 
         List<CategoryDto> list = categoryService.list();
         model.addAttribute("list", list);
@@ -37,7 +37,7 @@ public class AdminCategoryController {
     }
 
     @PostMapping("/admin/category/delete.do")
-    public String del(Model model, CategoryInput parameter){
+    public String del(Model model, CategoryInput parameter) {
 
         boolean result = categoryService.del(parameter.getId());
 
@@ -45,11 +45,10 @@ public class AdminCategoryController {
     }
 
     @PostMapping("/admin/category/update.do")
-    public String update(Model model, CategoryInput parameter){
+    public String update(Model model, CategoryInput parameter) {
 
         boolean result = categoryService.update(parameter);
 
         return "redirect:/admin/category/list.do";
     }
-
 }

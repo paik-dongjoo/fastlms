@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -14,9 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 public class Course {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     Long id;
 
     long categoryId;
@@ -28,13 +28,16 @@ public class Course {
     @Column(length = 1000)
     String summary;
 
-    @Lob
+    @Lob // large object
     String contents;
     long price;
     long salePrice;
-    LocalDateTime saleEndEt;
+    LocalDate saleEndDt;
 
     LocalDateTime regDt; // 등록일(추가날짜)
-    LocalDateTime udtDt; // 수정일(수정날짜)
+    LocalDateTime udDt; // 수정일(수정날짜)
+
+    String filename;
+    String urlFilename;
 
 }

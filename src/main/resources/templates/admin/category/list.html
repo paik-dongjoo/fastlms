@@ -1,13 +1,14 @@
+<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>관리자 카테고리 관리 화면</title>
+    <head>
+        <meta charset="UTF-8">
+        <title>관리자 화면</title>
+    </head>
     <style>
         .list table {
             width: 100%;
             border-collapse: collapse;
         }
-
         .list table th, .list table td {
             border: solid 1px #000;
         }
@@ -15,133 +16,106 @@
             text-align: center;
             padding: 100px;
         }
-        .inline-div {
+        .inline-div{
             display: inline-block;
         }
     </style>
-
-    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
-            integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
-        $(document).ready(function () {
-            $('form[name=deleteForm]').on('submit', function () {
+        $(document).ready(function() {
 
+            $('form[name=deleteForm]').on('submit', function() {
                 if (!confirm('카테고리를 삭제하시겠습니까?')) {
                     return false;
                 }
+
             });
 
             $('button.update-button').on('click', function() {
-
-                if (!confirm('카테고리를 수정하시겠습니까?')) {
+                if(!confirm('카테고리를 수정하시겠습니까?')){
                     return false;
                 }
 
-                var $this = $(this);
-                var $tr = $this.closest('tr');
+                var $this = $(this); // this는 현재 버튼
+                var $tr = $this.closest('tr'); // 가장 가까운 감싼 tr 찾음
 
+                // tr에서 다시 값 찾기
                 var id = $tr.find('input[name=id]').val();
                 var categoryName = $tr.find('input[name=categoryName]').val();
                 var sortValue = $tr.find('input[name=sortValue]').val();
                 var usingYn = $tr.find('input[type=checkbox]')[0].checked;
 
                 $updateForm = $('form[name=updateForm]');
-
-                $updateForm.find('input[name=id]').val(id);
+                $updateForm.find('input[name=id]').val(id); // 찾은 input에 대해 각각 값 넣어주기
                 $updateForm.find('input[name=categoryName]').val(categoryName);
                 $updateForm.find('input[name=sortValue]').val(sortValue);
                 $updateForm.find('input[name=usingYn]').val(usingYn);
-                $updateForm.submit();
+                $updateForm.submit(); // 서버로 보내기
             });
         });
     </script>
-
-
-</head>
-
 <body>
+    <h1>카테고리 관리</h1>
 
-<h1>카테고리 관리</h1>
+    <div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
 
-<div th:replace="/fragments/layout.html :: fragment-admin-body-menu"></div>
+    <div class="list">
+        <div>
+            <form method="post" action="/admin/category/add.do">
+                <input type="text" name="categoryName" placeholder="카테고리 추가" required>
+                <button type="submit">추가</button>
+            </form>
+        </div>
 
-<div class="list">
+        <table>
+            <thead>
+                <tr>
+                    <th> ID </th>
+                    <th>카테고리명</th>
+                    <th>순서</th>
+                    <th>사용여부</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="x: ${list}">
+                    <td th:text="${x.id}"></td>
 
-    <div>
-        <form method="post" action="/admin/category/add.do">
-            <input type="text" name="categoryName" required placeholder="카테고리명 입력"/>
-            <button type="submit">추가</button>
-        </form>
+                    <td>
+                        <input th:value="${x.categoryName}" type="text" name="categoryName"/>
+                    </td>
+                    <td>
+                        <input th:value="${x.sortValue}" type="text" name="sortValue"/>
+                    </td>
+                    <td>
+                        <input th:checked="${x.usingYn}" type="checkbox" th:id="'usingYn_' + ${x.id}" th:name="'usingYn_'+ ${x.id}" th:value="${x.usingYn}" />
+                        <label th:for="'usingYn_' + ${x.id}">사용</label>
+                    </td>
+                    <td>
+                        <div class="inline-div">
+                            <button class="update-button" type="button">수정</button>
+                        </div>
+                        <div class="inline-div">
+                            <form name="deleteForm" method="post" action="/admin/category/delete.do">
+                                <input type="hidden" name="id" th:value="${x.id}" />
+                                <button type="submit">삭제하기</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.size(list) < 1}">
+                    <td colspan="5">
+                        <p class="nothing">내용이 없습니다.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
-    <table>
-        <thead>
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-                카테고리명
-            </th>
-            <th>
-                순서
-            </th>
-            <th>
-                사용여부
-            </th>
-            <th>
-                비고
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="x : ${list}">
-            <td th:text="${x.id}">
-                <input type="hidden" name="id" th:value="${x.id}"/>
-                <p th:text="${x.id}"></p>
-                1
-            </td>
-            <td>
-                <input th:value="${x.categoryName}" type="text" name="categoryName"/>
-            </td>
-            <td>
-                <input th:value="${x.sortValue}" type="text" name="sortValue"/>
-            </td>
-            <td>
-                <input th:checked="${x.usingYn}" type="checkbox"
-                       th:name="'usingYn_' + ${x.id}" value="true"/>
-                <label th:for="'usingYn_' + ${x.id}">사용</label>
-            </td>
-            <td>
-                <div class="inline-div">
-                    <button class="update-button" type="button">수정</button>
-                </div>
-                <div class="inline-div">
-                    <form name="deleteForm" method="post" action="/admin/category/delete.do">
-                        <input type="hidden" name="id" th:value="${x.id}"/>
-                        <button type="submit">삭제</button>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        <tr th:if="${#lists.size(list) < 1}">
-            <td colspan="5">
-                <p class="nothing">내용이 없습니다.</p>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-</div>
-
-<form name="updateForm" method="post" action="/admin/category/update.do">
-    <input type="hidden" name="id"/>
-    <input type="hidden" name="categoryName"/>
-    <input type="hidden" name="sortValue"/>
-    <input type="hidden" name="usingYn"/>
-</form>
-
+    <form name="updateForm" method="post" action="/admin/category/update.do">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="categoryName" />
+        <input type="hidden" name="sortValue" />
+        <input type="hidden" name="usingYn" />
+    </form>
 </body>
-
 </html>

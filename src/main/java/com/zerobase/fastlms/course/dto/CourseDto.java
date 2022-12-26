@@ -6,12 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Data
+@NoArgsConstructor
 @Builder
+@Data
 public class CourseDto {
 
     Long id;
@@ -20,20 +24,22 @@ public class CourseDto {
     String keyword;
     String subject;
     String summary;
+
     String contents;
     long price;
     long salePrice;
-    LocalDateTime saleEndEt;
-
+    LocalDate saleEndDt;
     LocalDateTime regDt; // 등록일(추가날짜)
-    LocalDateTime udtDt; // 수정일(수정날짜)
+    LocalDateTime udDt; // 수정일(수정날짜)
 
-    // 추가컬럼
+    String filename;
+    String urlFilename;
+
+    // 추가칼럼
     long totalCount;
     long seq;
 
     public static CourseDto of(Course course) {
-
         return CourseDto.builder()
                 .id(course.getId())
                 .categoryId(course.getCategoryId())
@@ -44,10 +50,25 @@ public class CourseDto {
                 .contents(course.getContents())
                 .price(course.getPrice())
                 .salePrice(course.getSalePrice())
-                .saleEndEt(course.getSaleEndEt())
+                .saleEndDt(course.getSaleEndDt())
                 .regDt(course.getRegDt())
-                .udtDt(course.getUdtDt())
+                .udDt(course.getUdDt())
+                .filename(course.getFilename())
+                .urlFilename(course.getUrlFilename())
                 .build();
+    }
+
+    public static List<CourseDto> of(List<Course> courses) {
+
+        if (courses == null) {
+            return null;
+        }
+
+        List<CourseDto> courseList = new ArrayList<>();
+        for (Course x: courses) {
+            courseList.add(CourseDto.of(x));
+        }
+        return courseList;
 
     }
 }

@@ -1,17 +1,38 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
 
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.bxslider').bxSlider({
+                auto: true,
+                speed: 500,
+                pause: 4000,
+                mode: 'fade',
+                autoControls: true,
+                pager: true
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1> 메인 페이지 </h1>
 
-    <body>
+    <div th:replace="/fragments/layout.html :: fragment-body-menu"></div>
 
-        <h1> Main page </h1>
-        <div th:replace="/fragments/layout.html :: fragment-body-menu">
+    <div class="home__slider">
+        <div class="bxslider">
+            <div th:each="x : ${list}">
+                <a th:href="${x.link}" th:alt="${x.bannerName}" th:target="${x.target.getValue()}">
+                    <img th:src="${x.getUrlFileName}">
+                </a>
+            </div>
         </div>
-        <hr/>
-
-    </body>
+    </div>
+</body>
 </html>

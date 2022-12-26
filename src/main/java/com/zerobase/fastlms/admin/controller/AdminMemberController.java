@@ -4,6 +4,8 @@ import com.zerobase.fastlms.admin.dto.MemberDto;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.admin.model.MemberInput;
 import com.zerobase.fastlms.course.controller.BaseController;
+import com.zerobase.fastlms.member.entity.LoginHistory;
+import com.zerobase.fastlms.member.model.LoginHistoryDto;
 import com.zerobase.fastlms.member.service.MemberService;
 import com.zerobase.fastlms.util.PageUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,22 +21,18 @@ import java.util.List;
 public class AdminMemberController extends BaseController {
 
     private final MemberService memberService;
-
     @GetMapping("/admin/member/list.do")
     public String list(Model model, MemberParam parameter) {
 
         parameter.init();
-
         List<MemberDto> members = memberService.list(parameter);
 
         long totalCount = 0;
-        if(members != null && members.size() > 0) {
+        if (members != null && members.size() > 0) {
             totalCount = members.get(0).getTotalCount();
         }
-
         String queryString = parameter.getQueryString();
-        String pagerHtml = getPagerHtml(totalCount, parameter.getPageSize(),
-                parameter.getPageIndex(), queryString);
+        String pagerHtml = getPagerHtml(totalCount, parameter.getPageSize(), parameter.getPageIndex(), queryString);
 
         model.addAttribute("list", members);
         model.addAttribute("totalCount", totalCount);
@@ -51,31 +49,23 @@ public class AdminMemberController extends BaseController {
         MemberDto member = memberService.detail(parameter.getUserId());
         model.addAttribute("member", member);
 
+        List<LoginHistoryDto> loginHistory = memberService.loadLoginHistory(parameter.getUserId());
+        model.addAttribute("loginHistory", loginHistory);
+
         return "admin/member/detail";
     }
 
     @PostMapping("/admin/member/status.do")
-    public String status(Model model, MemberInput parameter){
+    public String status(Model model, MemberInput parameter) {
+        boolean result = memberService.updateStatus(parameter.getUserId(), parameter.getUserStatus());
 
-        boolean result =
-        memberService.updateStatus(parameter.getUserId(), parameter.getUserStatus());
-
-        return "redirect:/admin/member/detail.do?userId="+
-                parameter.getUserId();
-
-
+        return "redirect:/admin/member/detail.do?userId=" + parameter.getUserId();
     }
 
     @PostMapping("/admin/member/password.do")
-    public String password(Model model, MemberInput parameter){
+    public String password(Model model, MemberInput parameter) {
+        boolean result = memberService.updatePassword(parameter.getUserId(), parameter.getPassword());
 
-        boolean result =
-                memberService.updatePassword(parameter.getUserId(), parameter.getPassword());
-
-        return "redirect:/admin/member/detail.do?userId="+
-                parameter.getUserId();
-
-
+        return "redirect:/admin/member/detail.do?userId=" + parameter.getUserId();
     }
-
 }

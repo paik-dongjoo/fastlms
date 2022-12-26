@@ -2,6 +2,9 @@ package com.zerobase.fastlms.member.service;
 
 import com.zerobase.fastlms.admin.dto.MemberDto;
 import com.zerobase.fastlms.admin.model.MemberParam;
+import com.zerobase.fastlms.course.model.ServiceResult;
+import com.zerobase.fastlms.member.entity.LoginHistory;
+import com.zerobase.fastlms.member.model.LoginHistoryDto;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,17 +16,19 @@ public interface MemberService extends UserDetailsService {
     boolean register(MemberInput parameter);
 
     /**
-     * uuid에 해당하는 계정을 활성화 함
+     * uuid에 헤당하는 계정을 활성화 함.
+     * @param uuid
+     * @return
      */
     boolean emailAuth(String uuid);
 
     /**
-     * 입력한 이메일로 비밀번호 초기화 정보를 발송
+     * 입력한 이메일로 비밀번호 초기화 정보를 전송
      */
     boolean sendResetPassword(ResetPasswordInput parameter);
 
     /**
-     * 입력받은 uuid에 대해서 password 초기화 진행
+     * 입력받은 uuid에 대해서 password로 초기화 함
      */
     boolean resetPassword(String id, String password);
 
@@ -38,7 +43,7 @@ public interface MemberService extends UserDetailsService {
     List<MemberDto> list(MemberParam parameter);
 
     /**
-     * 회원 상세정보
+     * 회원 상세 정보
      */
     MemberDto detail(String userId);
 
@@ -51,4 +56,30 @@ public interface MemberService extends UserDetailsService {
      * 회원 비밀번호 초기화
      */
     boolean updatePassword(String userId, String password);
+
+    /**
+     * 회원 정보 수정
+     */
+    ServiceResult updateMember(MemberInput parameter);
+
+    /**
+     * 회원 정보 페이지 내 비밀번호 변경 기능
+     */
+    ServiceResult updateMemberPassword(MemberInput parameter);
+
+    /**
+     * 회원을 탈퇴시켜 주는 로직
+     */
+    ServiceResult withdraw(String userId, String password);
+
+    /**
+     * 로그인 히스토리 저장
+     */
+    boolean insertLoginHistory(String userId, String ip, String userAgent);
+
+    /**
+     * 로그인 히스토리 로드
+     */
+    List<LoginHistoryDto> loadLoginHistory(String userId);
+
 }

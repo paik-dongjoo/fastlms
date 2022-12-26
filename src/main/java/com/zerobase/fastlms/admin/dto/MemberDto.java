@@ -7,30 +7,37 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
+@Builder
 public class MemberDto {
+    private String userId;
+    private String userName;
+    private String phone;
+    private String password;
+    private LocalDateTime regDt;
+    private LocalDateTime udDt;
 
-    String userId;
-    String userName;
-    String phone;
-    String password;
-    LocalDateTime regDt;
+    private boolean emailAuthYn;
+    private LocalDateTime emailAuthDt;
+    private String emailAuthKey;
 
-    boolean emailAuthYn;
-    LocalDateTime emailAuthDt;
-    String emailAuthKey;
+    private String resetPasswordKey;
+    private LocalDateTime resetPasswordLimitDt;
 
-    String resetPasswordKey;
-    LocalDateTime resetPasswordLimitDt;
+    private boolean adminYn;
+    private String userStatus;
 
-    boolean adminYn;
-    String userStatus;
+    private String zipcode;
+    private String addr;
+    private String addrDetail;
 
-    // 추가컬럼
+    private LocalDateTime loginDt;
+
+    //추가컬럼
     long totalCount;
     long seq;
 
@@ -42,6 +49,7 @@ public class MemberDto {
                 .phone(member.getPhone())
                 //.password(member.getPassword())
                 .regDt(member.getRegDt())
+                .udDt(member.getUdDt())
                 .emailAuthYn(member.isEmailAuthYn())
                 .emailAuthDt(member.getEmailAuthDt())
                 .emailAuthKey(member.getEmailAuthKey())
@@ -49,8 +57,26 @@ public class MemberDto {
                 .resetPasswordLimitDt(member.getResetPasswordLimitDt())
                 .adminYn(member.isAdminYn())
                 .userStatus(member.getUserStatus())
-                .build();
 
+                .zipcode(member.getZipcode())
+                .addr(member.getAddr())
+                .addrDetail(member.getAddrDetail())
+
+                .build();
     }
 
+    public String getRegDtText() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd MM:mm:ss");
+        return regDt != null ? regDt.format(formatter) : "";
+    }
+
+    public String getUdDtText() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd MM:mm:ss");
+        return udDt != null ? udDt.format(formatter) : "";
+    }
+
+    public String getLoginDtText() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd MM:mm:ss");
+        return loginDt != null ? loginDt.format(formatter) : "로그인 내역이 없습니다.";
+    }
 }

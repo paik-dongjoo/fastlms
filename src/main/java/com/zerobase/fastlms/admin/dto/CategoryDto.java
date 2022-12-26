@@ -9,21 +9,24 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
 public class CategoryDto {
 
-    Long id;
-    String categoryName;
-    int sortValue;
-    boolean usingYn;
+    private Long id;
+    private String categoryName;
+    private int sortValue;
+    private boolean usingYn;
+
+    // ADD COLUMNS
+    private int courseCount;
 
     public static List<CategoryDto> of(List<Category> categories) {
         if (categories != null) {
             List<CategoryDto> categoryList = new ArrayList<>();
-            for (Category x : categories) {
+            for (Category x: categories) {
                 categoryList.add(of(x));
             }
             return categoryList;
@@ -40,4 +43,5 @@ public class CategoryDto {
                 .usingYn(category.isUsingYn())
                 .build();
     }
+
 }
